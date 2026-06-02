@@ -1,6 +1,7 @@
 # 🤖 Simple AI Chatbot: Machine Learning Tutor
-   ```markdown
-   ![Chatbot Interface](screenshot.png)
+```
+![Chatbot Interface](screenshot.png)
+```
 
 ## 📖 Project Description
 This is a foundational, rule-based Natural Language Processing (NLP) chatbot designed to act as an interactive Machine Learning tutor. The application takes raw human language queries, processes them using professional text normalization techniques, and mathematically maps them to pre-defined educational intent categories. It features a strict boundary validation threshold to handle out-of-domain conversational queries and is deployed inside a responsive, browser-based graphical web interface.
