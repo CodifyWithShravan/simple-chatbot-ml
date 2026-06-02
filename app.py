@@ -1,5 +1,5 @@
 import streamlit as st # type: ignore
-import json
+import pandas as pd # type: ignore
 import random
 import string
 import nltk # type: ignore
@@ -19,84 +19,60 @@ download_nltk_resources()
 # Initialize the Lemmatizer
 lemmatizer = WordNetLemmatizer()
 
-# --- 1. Load the ML Knowledge Base ---
+# --- 1. Load the CSV Dataset ---
 try:
-    with open('intents.json', 'r') as file:
-        data = json.load(file)
+    # Load the dataset using pandas
+    df = pd.read_csv('dialogues.csv')
+    
+    # Drop any empty rows to prevent errors
+    df = df.dropna()
+    
+    # Extract the columns into standard Python lists
+    # Assuming your CSV has columns named 'Pattern' and 'Response'
+    reference_patterns = df['Pattern'].astype(str).tolist()
+    bot_responses = df['Response'].astype(str).tolist()
+    
 except FileNotFoundError:
-    st.error("Error: 'intents.json' file not found! Please place it in the same directory.")
+    st.error("Error: 'dialogues.csv' file not found! Please place it in the same directory.")
     st.stop()
-
-# Flatten data maps for processing
-reference_patterns = []
-pattern_to_intent_map = []
-
-for intent in data['intents']:
-    for pattern in intent['patterns']:
-        reference_patterns.append(pattern)
-        pattern_to_intent_map.append(intent)
+except KeyError:
+    st.error("Error: The CSV must contain 'Pattern' and 'Response' columns.")
+    st.stop()
 
 # --- 2. NLTK Text Preprocessing Pipeline ---
 def preprocess_text(text):
-    # Tokenize and convert to lowercase
     tokens = nltk.word_tokenize(text.lower())
-    # Remove punctuation marks
     tokens = [token for token in tokens if token not in string.punctuation]
-    # Lemmatize tokens to their base root words
     cleaned_tokens = [lemmatizer.lemmatize(token) for token in tokens]
     return " ".join(cleaned_tokens)
 
+# Preprocess all patterns from the CSV dataset
 preprocessed_patterns = [preprocess_text(pat) for pat in reference_patterns]
 
+# --- 3. Intent Matching Logic ---
 def get_bot_response(user_input):
     processed_input = preprocess_text(user_input)
     
     if not processed_input.strip():
-        return "Please type a valid question about Machine Learning!"
+        return "Please type a valid message!"
 
     all_documents = preprocessed_patterns + [processed_input]
     
     vectorizer = TfidfVectorizer(stop_words='english')
     tfidf_matrix = vectorizer.fit_transform(all_documents)
     
-    # Calculate the Cosine Similarity between the user vector (last element) and all dataset vectors
+    # Calculate the Cosine Similarity
     similarity_scores = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])
     
-    # Find the pattern that matches with highest score
+    # Find the best match
     best_match_index = similarity_scores.argmax()
     best_match_score = similarity_scores[0][best_match_index]
     
-    # Strict boundary evaluation cutoff to reject out-of-domain text
+    # Strict boundary evaluation cutoff
     if best_match_score > 0.22:
-        matched_intent = pattern_to_intent_map[best_match_index]
-        return random.choice(matched_intent['responses'])
+        # Directly return the response at the matching index from the CSV
+        return bot_responses[best_match_index]
     else:
-        return "Sorry, I am specifically trained to answer Machine Learning questions! Try asking me about concepts like neural networks, regression, or overfitting."
+        return "I'm not quite sure how to respond to that. Could you try rephrasing?"
 
-# --- 4. Streamlit Front-End Interface ---
-st.title("🤖 Simple AI Chatbot")
-st.write("An NLP-powered Machine Learning Tutor built using NLTK and TF-IDF Vectorization.")
-
-# Handle persistent chat interface messages array
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display entire dialogue history chain
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Collect user prompt input triggers
-if prompt := st.chat_input("Ask me an ML question (e.g., 'What is supervised learning?')..."):
-    # Append and render user text
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Calculate match and compute final response
-    response = get_bot_response(prompt)
-    
-    # Append and render system response
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    with st.chat_message("assistant"):
-        st.markdown(response)
+# (The Streamlit Front-End Interface section remains exactly the same as before)
