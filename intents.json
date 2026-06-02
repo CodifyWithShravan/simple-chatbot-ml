@@ -1,0 +1,49 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["hi", "hello", "hey", "is anyone there", "good day", "whats up"],
+      "responses": ["Hello! I am your ML Tutor bot. How can I help you learn today?", "Hi there! Ready to dive into some Machine Learning concepts?"]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["bye", "see you later", "goodbye", "i am done", "exit"],
+      "responses": ["Goodbye! Keep practicing your ML skills!", "See you later! Happy learning!"]
+    },
+    {
+      "tag": "what_is_ml",
+      "patterns": ["what is machine learning", "define machine learning", "explain ml", "what does machine learning mean"],
+      "responses": ["Machine Learning (ML) is a branch of artificial intelligence that allows computers to learn from data and improve from experience without being explicitly programmed."]
+    },
+    {
+      "tag": "supervised_learning",
+      "patterns": ["what is supervised learning", "explain supervised learning", "define supervised learning", "give an example of supervised learning"],
+      "responses": ["Supervised learning is a type of ML where the model is trained on labeled data. This means every training example is paired with its correct output label (e.g., predicting house prices based on historical sales data)."]
+    },
+    {
+      "tag": "unsupervised_learning",
+      "patterns": ["what is unsupervised learning", "explain unsupervised learning", "define unsupervised learning", "clustering machine learning"],
+      "responses": ["Unsupervised learning is a type of ML where the model is trained on unlabeled data. The algorithm tries to find hidden patterns, structures, or clusters within the data on its own (e.g., grouping customers by purchasing habits)."]
+    },
+    {
+      "tag": "overfitting",
+      "patterns": ["what is overfitting", "explain overfitting", "how to fix overfitting", "why is my model overfitting"],
+      "responses": ["Overfitting happens when a model learns the training data too well, including its noise and outliers. As a result, it performs excellently on training data but poorly on unseen test data. You can fix it using regularization, cross-validation, or by gathering more data."]
+    },
+    {
+      "tag": "underfitting",
+      "patterns": ["what is underfitting", "explain underfitting", "define underfitting", "why is my model underfitting"],
+      "responses": ["Underfitting occurs when a model is too simple to capture the underlying pattern of the data. It performs poorly on both the training data and new test data (e.g., using a straight line to fit a highly curved dataset)."]
+    },
+    {
+      "tag": "regression",
+      "patterns": ["what is regression", "linear regression explanation", "define regression analysis"],
+      "responses": ["Regression is a supervised learning task where the model predicts a continuous, numerical output value (e.g., predicting temperature, stock prices, or house costs)."]
+    },
+    {
+      "tag": "classification",
+      "patterns": ["what is classification", "explain classification", "difference between regression and classification"],
+      "responses": ["Classification is a supervised learning task where the model predicts a discrete category or class label (e.g., classifying an email as 'Spam' or 'Not Spam', or diagnosing an image as 'Cat' or 'Dog')."]
+    }
+  ]
+}
